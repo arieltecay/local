@@ -1,33 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TaskRow } from './components/TaskRow';
 import { TaskBanner } from './components/TaskBanner';
 import { TaskCreator } from './components/TaskCreator'
+import { VisibilityControl } from './components/VisibilityControl'
+
 
 function App() {
   const [userName, setUserName] = useState('Ariel Tecay');
   const [taskItem, setTaskItem] = useState([
-    { name: 'Task One', done: true },
-    { name: 'Task Two', done: false },
-    { name: 'Task Three', done: false },
-    { name: 'Task Four', done: true }
+    // { name: 'Task One', done: true },
+    // { name: 'Task Two', done: false },
+    // { name: 'Task Three', done: false },
+    // { name: 'Task Four', done: true }
   ])
+
+  const [showCompleted, setshowCompleted] = useState(true)
+
+  useEffect(() => {
+    let data = localStorage.getItem('tasks');
+    // console.log(localStorage.getItem('tasks'));
+    if (data !== null) {
+      setTaskItem(JSON.parse(data));
+    }
+    else {
+      setUserName("Api de Ariel Tecay")
+      setTaskItem([
+        // { name: 'Task Expample 1 ', done: true },
+        // { name: 'Task Expample 2', done: false },
+        // { name: 'Task Expample 3', done: false },
+        // { name: 'Task Expample 4', done: true }
+      ])
+      setshowCompleted(true);
+    }
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem('tasks', JSON.stringify(taskItem))
+  }, [taskItem])
 
   const createNewTask = taskName => {
     if (!taskItem.find(t => t.name === taskName)) {
-      setTaskItem([...taskItem, {name: taskName, done: true}])
+      setTaskItem([...taskItem, { name: taskName, done: false }])
     }
   }
 
   const toggleTask = task => setTaskItem(taskItem.map(t => (t.name === task.name ? { ...t, done: !t.done } : t)))
 
-  const taskTableRows = () =>
-    taskItem.map(task => (
-      <TaskRow
-        key={task.name}
-        task={task}
-        toggleTask={toggleTask}
-      />
-    ))
+  const taskTableRows = (doneValue) =>
+    taskItem
+      .filter(task => task.done === doneValue)
+      .map(task => (
+        <TaskRow
+          key={task.name}
+          task={task}
+          toggleTask={toggleTask}
+        />
+      ))
 
   return (
     <div>
@@ -46,10 +74,32 @@ function App() {
           </tr>
         </thead>
         <tbody>
-          {taskTableRows()}
+          {taskTableRows(false)}
         </tbody>
-
       </table>
+
+      <div className="bg-secondary-text-white text-center p-2">
+        <VisibilityControl
+          description="Completed Tasks"
+          isChecked={showCompleted}
+          callback={checked => setshowCompleted(checked)}
+        />
+      </div>
+      {
+        showCompleted && (
+          <table className="table table-striped table-bordered">
+            <thead>
+              <tr>
+                <th>Description:</th>
+                <th>Done:</th>
+              </tr>
+            </thead>
+            <tbody>
+              {taskTableRows(true)}
+            </tbody>
+          </table>
+        )
+      }
     </div>
   );
 }
