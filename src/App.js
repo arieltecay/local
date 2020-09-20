@@ -6,7 +6,7 @@ import { VisibilityControl } from './components/VisibilityControl'
 
 
 function App() {
-  const [userName, setUserName] = useState('');
+  const [userName, setUserName] = useState('Api de Ariel Tecay');
   const [taskItem, setTaskItem] = useState([])
 
   const [showCompleted, setshowCompleted] = useState(true)
