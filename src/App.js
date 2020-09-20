@@ -6,19 +6,14 @@ import { VisibilityControl } from './components/VisibilityControl'
 
 
 function App() {
-  const [userName, setUserName] = useState('Ariel Tecay');
-  const [taskItem, setTaskItem] = useState([
-    // { name: 'Task One', done: true },
-    // { name: 'Task Two', done: false },
-    // { name: 'Task Three', done: false },
-    // { name: 'Task Four', done: true }
-  ])
+  const [userName, setUserName] = useState('');
+  const [taskItem, setTaskItem] = useState([])
 
   const [showCompleted, setshowCompleted] = useState(true)
 
   useEffect(() => {
     let data = localStorage.getItem('tasks');
-    // console.log(localStorage.getItem('tasks'));
+
     if (data !== null) {
       setTaskItem(JSON.parse(data));
     }
